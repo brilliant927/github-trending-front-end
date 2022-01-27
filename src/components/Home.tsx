@@ -1,22 +1,34 @@
 import RepositoryBody from "./RepositoryBody";
 import DeveloperBody from "./DeveloperBody";
 import {useEffect, useState } from "react";
-const trending  = require('trending-github');
+import axios, { AxiosResponse } from 'axios';
+
 function Home() {
     const [isRepo, setIsRepo] = useState<boolean>(true);
+    const [devData, setDevData] = useState<any>([]);
+    const [repoData, setRepoData] = useState<any>([]);
     const onClickHandler = (flag:boolean) => {
         setIsRepo(flag);
+
     }
     useEffect(() => {
         getMyData();
-    }, []);
+    }, [isRepo]);
     
     const getMyData = async () => {
-        trending()
-        .then((repos:any) => console.log(repos));
+        axios.get((process.env.REACT_APP_API || 'http://localhost:9000') +'/getGithubTrends?section='+(isRepo ? 'repositories' : 'developers'))
+        .then((res : AxiosResponse) => {
+            isRepo ? setRepoData(res.data) : setDevData(res.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        .finally(() => {
+            
+        });
     }
     return(
-        <div className="relative  px-16 pt-40">
+        <div className="relative  px-16 pt-40  h-full">
             <div className="border-solid border-1 border-current rounded-6">
                 <div className="flex items-center justify-between p-4 bg-[##2d333b]  border-solid border-2 border-[#444c56] rounded-t-6 md:h-64">
                     <div className="flex flex-col md:flex-row ml-10">
@@ -63,7 +75,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                {isRepo ? <RepositoryBody/> : <DeveloperBody/>}
+                {isRepo ? <RepositoryBody data={repoData}/> : <DeveloperBody data={devData} />}
                 
             </div>
         </div>
