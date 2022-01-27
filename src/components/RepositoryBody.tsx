@@ -5,7 +5,6 @@ interface Props {
 }
 
 function RepositoryBody({data}:Props){
-    console.log(data);
     return(
         <>
         {

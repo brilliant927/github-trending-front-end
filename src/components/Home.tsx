@@ -9,13 +9,12 @@ function Home() {
     const [repoData, setRepoData] = useState<any>([]);
     const onClickHandler = (flag:boolean) => {
         setIsRepo(flag);
-
     }
     useEffect(() => {
-        getMyData();
+        getData();
     }, [isRepo]);
     
-    const getMyData = async () => {
+    const getData = async () => {
         axios.get((process.env.REACT_APP_API || 'http://localhost:9000') +'/getGithubTrends?section='+(isRepo ? 'repositories' : 'developers'))
         .then((res : AxiosResponse) => {
             isRepo ? setRepoData(res.data) : setDevData(res.data);
@@ -28,7 +27,7 @@ function Home() {
         });
     }
     return(
-        <div className="relative  px-16 pt-40  h-full">
+        <div className="relative  px-16 pt-40 min-h-100">
             <div className="border-solid border-1 border-current rounded-6">
                 <div className="flex items-center justify-between p-4 bg-[##2d333b]  border-solid border-2 border-[#444c56] rounded-t-6 md:h-64">
                     <div className="flex flex-col md:flex-row ml-10">
